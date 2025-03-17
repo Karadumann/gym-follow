@@ -4,190 +4,189 @@ import { useState, useEffect } from 'react';
 import { WorkoutProgram, Exercise } from '../../../types';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
-const initialWorkoutPrograms: WorkoutProgram[] = [
+const exercises: Exercise[] = [
   {
-    id: '1',
-    name: 'Başlangıç Seviyesi Tam Vücut',
-    description: 'Yeni başlayanlar için temel hareketleri içeren tam vücut antrenman programı.',
+    id: 'bench-press',
+    name: 'Bench Press',
+    description: 'Yatay bench üzerinde yapılan göğüs egzersizi',
+    icon: '/exercises/bench-press.png'
+  },
+  {
+    id: 'squat',
+    name: 'Squat',
+    description: 'Bacak kaslarını çalıştıran temel egzersiz',
+    icon: '/exercises/squat.png'
+  },
+  {
+    id: 'deadlift',
+    name: 'Deadlift',
+    description: 'Sırt kaslarını çalıştıran temel egzersiz',
+    icon: '/exercises/deadlift.png'
+  },
+  {
+    id: 'overhead-press',
+    name: 'Overhead Press',
+    description: 'Omuz kaslarını çalıştıran temel egzersiz',
+    icon: '/exercises/overhead-press.png'
+  },
+  {
+    id: 'barbell-row',
+    name: 'Barbell Row',
+    description: 'Sırt kaslarını çalıştıran temel egzersiz',
+    icon: '/exercises/barbell-row.png'
+  }
+];
+
+const workoutPrograms: WorkoutProgram[] = [
+  {
+    id: 'beginner-strength',
+    name: 'Başlangıç Seviyesi Güç Programı',
+    description: 'Temel güç egzersizlerini öğrenmek ve güç kazanmak için ideal program',
     level: 'beginner',
     duration: '8 hafta',
     frequency: 'Haftada 3 gün',
     exercises: [
-      { exerciseId: '1', sets: 3, reps: 10, rest: '90 saniye' },
-      { exerciseId: '2', sets: 3, reps: 12, rest: '90 saniye' },
-      { exerciseId: '3', sets: 3, reps: 8, rest: '120 saniye' }
+      { exerciseId: 'bench-press', sets: 3, reps: 10 },
+      { exerciseId: 'squat', sets: 3, reps: 12 },
+      { exerciseId: 'deadlift', sets: 3, reps: 8 }
     ]
   },
   {
-    id: '2',
-    name: 'Orta Seviye Bölünmüş Program',
-    description: 'Vücut bölümlerini ayrı günlerde çalıştıran orta seviye program.',
+    id: 'intermediate-strength',
+    name: 'Orta Seviye Güç Programı',
+    description: 'Güç ve kas kütlesi kazanımı için tasarlanmış program',
     level: 'intermediate',
     duration: '12 hafta',
     frequency: 'Haftada 4 gün',
     exercises: [
-      { exerciseId: '1', sets: 4, reps: 8, rest: '60 saniye' },
-      { exerciseId: '2', sets: 4, reps: 10, rest: '90 saniye' },
-      { exerciseId: '3', sets: 4, reps: 6, rest: '120 saniye' }
+      { exerciseId: 'bench-press', sets: 4, reps: 8 },
+      { exerciseId: 'squat', sets: 4, reps: 10 },
+      { exerciseId: 'deadlift', sets: 4, reps: 6 },
+      { exerciseId: 'overhead-press', sets: 3, reps: 8 }
     ]
   },
   {
-    id: '3',
+    id: 'advanced-strength',
     name: 'İleri Seviye Güç Programı',
-    description: 'Güç ve kas kütlesi geliştirmeye odaklanan ileri seviye program.',
+    description: 'Maksimum güç ve kas kütlesi için yoğun antrenman programı',
     level: 'advanced',
     duration: '16 hafta',
     frequency: 'Haftada 5 gün',
     exercises: [
-      { exerciseId: '1', sets: 5, reps: 5, rest: '180 saniye' },
-      { exerciseId: '2', sets: 5, reps: 5, rest: '180 saniye' },
-      { exerciseId: '3', sets: 5, reps: 3, rest: '240 saniye' }
+      { exerciseId: 'bench-press', sets: 5, reps: 5 },
+      { exerciseId: 'squat', sets: 5, reps: 5 },
+      { exerciseId: 'deadlift', sets: 5, reps: 5 },
+      { exerciseId: 'overhead-press', sets: 4, reps: 6 },
+      { exerciseId: 'barbell-row', sets: 4, reps: 8 }
     ]
   }
 ];
 
-const initialExercises: Exercise[] = [
-  {
-    id: '1',
-    name: 'Bench Press',
-    description: 'A compound exercise that targets the chest, shoulders, and triceps.',
-    muscleGroup: 'Chest',
-    equipment: 'Barbell, Bench',
-    difficulty: 'intermediate',
-    imageUrl: '/exercises/bench-press.svg'
-  },
-  {
-    id: '2',
-    name: 'Squat',
-    description: 'A fundamental lower body exercise that targets the quadriceps, hamstrings, and glutes.',
-    muscleGroup: 'Legs',
-    equipment: 'Barbell, Squat Rack',
-    difficulty: 'intermediate',
-    imageUrl: '/exercises/squat.svg'
-  },
-  {
-    id: '3',
-    name: 'Deadlift',
-    description: 'A compound exercise that targets multiple muscle groups including the back, legs, and core.',
-    muscleGroup: 'Back',
-    equipment: 'Barbell',
-    difficulty: 'advanced',
-    imageUrl: '/exercises/deadlift.svg'
-  }
-];
+interface Props {
+  params: {
+    id: string;
+  };
+}
 
-export default function WorkoutDetailPage() {
-  const params = useParams();
-  const [workout, setWorkout] = useState<WorkoutProgram | null>(null);
+export default function WorkoutProgramDetailPage({ params }: Props) {
+  const program = workoutPrograms.find((p) => p.id === params.id);
 
-  useEffect(() => {
-    const foundWorkout = initialWorkoutPrograms.find(w => w.id === params.id);
-    setWorkout(foundWorkout || null);
-  }, [params.id]);
-
-  if (!workout) {
+  if (!program) {
     return (
-      <main className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Program Bulunamadı</h1>
-          <Link href="/workouts" className="button">
-            Programlara Dön
-          </Link>
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+          <p>Program bulunamadı.</p>
         </div>
-      </main>
+      </div>
     );
   }
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <nav className="bg-blue-600 text-white p-4 rounded-lg mb-6">
-        <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold">{workout.name}</h1>
-          <Link href="/workouts" className="text-white hover:text-blue-100">
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </Link>
-        </div>
+    <div className="container mx-auto px-4 py-8">
+      <nav className="bg-blue-600 text-white p-4 rounded-lg shadow-lg mb-6">
+        <h1 className="text-2xl font-bold">{program.name}</h1>
       </nav>
 
-      <div className="card">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden">
         <div className="p-6">
-          <div className="flex flex-wrap gap-2 mb-4">
-            <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-xs">
-              {workout.level}
-            </span>
-            <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded text-xs">
-              {workout.duration}
-            </span>
-            <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded text-xs">
-              {workout.frequency}
-            </span>
-          </div>
+          <div className="space-y-6">
+            <div>
+              <h2 className="text-xl font-semibold mb-2">Program Detayları</h2>
+              <p className="text-gray-600 mb-4">{program.description}</p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-gray-700">Seviye</h3>
+                  <p className="text-gray-600">{program.level}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-gray-700">Süre</h3>
+                  <p className="text-gray-600">{program.duration}</p>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-lg">
+                  <h3 className="font-medium text-gray-700">Sıklık</h3>
+                  <p className="text-gray-600">{program.frequency}</p>
+                </div>
+              </div>
+            </div>
 
-          <h2 className="text-lg font-semibold mb-2">Program Açıklaması</h2>
-          <p className="text-gray-600 dark:text-gray-300 mb-6">{workout.description}</p>
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Egzersizler</h2>
+              <div className="space-y-4">
+                {program.exercises.map((exercise) => {
+                  const exerciseDetails = exercises.find((e) => e.id === exercise.exerciseId);
+                  if (!exerciseDetails) return null;
 
-          <h2 className="text-lg font-semibold mb-4">Egzersizler</h2>
-          <div className="space-y-4">
-            {workout.exercises.map((exercise, index) => {
-              const exerciseDetails = initialExercises.find(e => e.id === exercise.exerciseId);
-              if (!exerciseDetails) return null;
-
-              return (
-                <div key={index} className="border dark:border-gray-700 rounded-lg p-4">
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <h3 className="font-medium mb-2">{exerciseDetails.name}</h3>
-                      <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {exercise.sets} set x {exercise.reps} tekrar
-                        </span>
-                        <span className="text-sm text-gray-600 dark:text-gray-300">
-                          {exercise.rest} dinlenme
-                        </span>
+                  return (
+                    <div key={exercise.exerciseId} className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
+                      <div className="flex-shrink-0">
+                        <Image
+                          src={exerciseDetails.icon}
+                          alt={exerciseDetails.name}
+                          width={60}
+                          height={60}
+                          className="object-contain"
+                        />
                       </div>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded text-xs">
-                          {exerciseDetails.muscleGroup}
-                        </span>
-                        <span className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-200 rounded text-xs">
-                          {exerciseDetails.equipment}
-                        </span>
+                      <div className="flex-grow">
+                        <h3 className="font-medium text-gray-800">{exerciseDetails.name}</h3>
+                        <p className="text-gray-600">
+                          {exercise.sets} set x {exercise.reps} tekrar
+                        </p>
                       </div>
                     </div>
-                    <Link href={`/exercises/${exerciseDetails.id}`} className="text-blue-600 dark:text-blue-400 hover:underline text-sm">
-                      Detaylar
-                    </Link>
-                  </div>
-                </div>
-              );
-            })}
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      <nav className="bottom-nav">
-        <Link href="/" className="nav-link">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-          </svg>
-          <span className="text-xs">Ana Sayfa</span>
-        </Link>
-        <Link href="/exercises" className="nav-link">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-          </svg>
-          <span className="text-xs">Egzersizler</span>
-        </Link>
-        <Link href="/workouts" className="nav-link">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-          </svg>
-          <span className="text-xs">Programlar</span>
-        </Link>
+      <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
+        <div className="flex justify-around max-w-md mx-auto">
+          <a href="/" className="text-gray-600 hover:text-blue-600">
+            <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+            </svg>
+            <span className="text-xs">Ana Sayfa</span>
+          </a>
+          <a href="/exercises" className="text-gray-600 hover:text-blue-600">
+            <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+            </svg>
+            <span className="text-xs">Egzersizler</span>
+          </a>
+          <a href="/workouts" className="text-blue-600">
+            <svg className="w-6 h-6 mx-auto mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+            </svg>
+            <span className="text-xs">Programlar</span>
+          </a>
+        </div>
       </nav>
-    </main>
+    </div>
   );
 } 
