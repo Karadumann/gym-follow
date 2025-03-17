@@ -1,6 +1,9 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { metadata } from "./metadata";
+import dynamic from "next/dynamic";
+
+const ServiceWorkerRegistration = dynamic(() => import("../components/ServiceWorkerRegistration"), { ssr: false });
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,6 +26,7 @@ export default function RootLayout({
         <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className={`${inter.className} antialiased`}>
+        <ServiceWorkerRegistration />
         {children}
       </body>
     </html>
