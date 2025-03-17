@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Bench Press</title>
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <!-- Bench -->
+    <rect fill="#4A5568" x="250" y="300" width="300" height="40" rx="5"/>
+    <rect fill="#2D3748" x="270" y="340" width="40" height="100"/>
+    <rect fill="#2D3748" x="490" y="340" width="40" height="100"/>
+    
+    <!-- Barbell -->
+    <rect fill="#A0AEC0" x="150" y="250" width="500" height="20" rx="10"/>
+    <circle fill="#A0AEC0" cx="150" cy="260" r="40"/>
+    <circle fill="#A0AEC0" cx="650" cy="260" r="40"/>
+    
+    <!-- Weight Plates -->
+    <rect fill="#E53E3E" x="200" y="230" width="30" height="60" rx="5"/>
+    <rect fill="#E53E3E" x="570" y="230" width="30" height="60" rx="5"/>
+    <rect fill="#C53030" x="240" y="220" width="20" height="80" rx="5"/>
+    <rect fill="#C53030" x="540" y="220" width="20" height="80" rx="5"/>
+  </g>
+</svg> 

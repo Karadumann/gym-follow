@@ -1,249 +1,115 @@
 'use client';
 
 import { useState } from 'react';
+import { WorkoutProgram } from '../../types';
+import Link from 'next/link';
 
-interface WorkoutProgram {
-  id: number;
-  name: string;
-  description: string;
-  difficulty: string;
-  duration: string;
-  frequency: string;
-  schedule: {
-    day: string;
-    exercises: {
-      name: string;
-      sets: string;
-      reps: string;
-      rest: string;
-    }[];
-  }[];
-}
-
-const workoutPrograms: WorkoutProgram[] = [
+const initialWorkoutPrograms: WorkoutProgram[] = [
   {
-    id: 1,
-    name: "Başlangıç Kalistenik Programı",
-    description: "Temel hareketlere odaklanan, vücut ağırlığı ile yapılan başlangıç seviye program.",
-    difficulty: "Başlangıç",
-    duration: "8 Hafta",
-    frequency: "Haftada 3 Gün",
-    schedule: [
-      {
-        day: "Gün 1 - Üst Vücut",
-        exercises: [
-          { name: "Pike Push-up", sets: "3", reps: "8-12", rest: "90 sn" },
-          { name: "Negative Pull-up", sets: "3", reps: "5-8", rest: "90 sn" },
-          { name: "Dips", sets: "3", reps: "8-12", rest: "90 sn" },
-          { name: "Inverted Row", sets: "3", reps: "10-15", rest: "90 sn" }
-        ]
-      },
-      {
-        day: "Gün 2 - Alt Vücut",
-        exercises: [
-          { name: "Squat", sets: "3", reps: "15-20", rest: "90 sn" },
-          { name: "Lunges", sets: "3", reps: "12-15", rest: "90 sn" },
-          { name: "Calf Raises", sets: "3", reps: "15-20", rest: "60 sn" }
-        ]
-      },
-      {
-        day: "Gün 3 - Tam Vücut",
-        exercises: [
-          { name: "Push-up", sets: "3", reps: "10-15", rest: "90 sn" },
-          { name: "Band Pull-up", sets: "3", reps: "8-12", rest: "90 sn" },
-          { name: "Plank", sets: "3", reps: "30-45 sn", rest: "60 sn" }
-        ]
-      }
+    id: '1',
+    name: 'Başlangıç Seviyesi Tam Vücut',
+    description: 'Yeni başlayanlar için temel hareketleri içeren tam vücut antrenman programı.',
+    level: 'beginner',
+    duration: '8 hafta',
+    frequency: 'Haftada 3 gün',
+    exercises: [
+      { exerciseId: '1', sets: 3, reps: 10, rest: '90 saniye' },
+      { exerciseId: '2', sets: 3, reps: 12, rest: '90 saniye' },
+      { exerciseId: '3', sets: 3, reps: 8, rest: '120 saniye' }
     ]
   },
   {
-    id: 2,
-    name: "İleri Seviye PPL Programı",
-    description: "Push, Pull, Legs split programı ile maksimum güç ve kas gelişimi hedefleyen ileri seviye program.",
-    difficulty: "İleri",
-    duration: "12 Hafta",
-    frequency: "Haftada 6 Gün",
-    schedule: [
-      {
-        day: "Gün 1 - Push",
-        exercises: [
-          { name: "Handstand Push-up", sets: "4", reps: "6-8", rest: "120 sn" },
-          { name: "Ring Dips", sets: "4", reps: "8-12", rest: "120 sn" },
-          { name: "Pike Push-up", sets: "3", reps: "10-12", rest: "90 sn" }
-        ]
-      },
-      {
-        day: "Gün 2 - Pull",
-        exercises: [
-          { name: "Muscle Up", sets: "4", reps: "3-5", rest: "180 sn" },
-          { name: "Front Lever Hold", sets: "4", reps: "10-15 sn", rest: "120 sn" },
-          { name: "Pull-up", sets: "4", reps: "8-12", rest: "120 sn" }
-        ]
-      },
-      {
-        day: "Gün 3 - Legs",
-        exercises: [
-          { name: "Pistol Squat", sets: "4", reps: "6-8", rest: "120 sn" },
-          { name: "Jump Squat", sets: "3", reps: "12-15", rest: "90 sn" },
-          { name: "Single Leg Calf Raise", sets: "3", reps: "15-20", rest: "60 sn" }
-        ]
-      }
+    id: '2',
+    name: 'Orta Seviye Bölünmüş Program',
+    description: 'Vücut bölümlerini ayrı günlerde çalıştıran orta seviye program.',
+    level: 'intermediate',
+    duration: '12 hafta',
+    frequency: 'Haftada 4 gün',
+    exercises: [
+      { exerciseId: '1', sets: 4, reps: 8, rest: '60 saniye' },
+      { exerciseId: '2', sets: 4, reps: 10, rest: '90 saniye' },
+      { exerciseId: '3', sets: 4, reps: 6, rest: '120 saniye' }
     ]
   },
   {
-    id: 3,
-    name: "Core ve Denge Programı",
-    description: "Core gücü ve denge geliştirmeye odaklanan orta seviye program.",
-    difficulty: "Orta",
-    duration: "6 Hafta",
-    frequency: "Haftada 4 Gün",
-    schedule: [
-      {
-        day: "Gün 1 - Core Güç",
-        exercises: [
-          { name: "L-Sit", sets: "4", reps: "10-15 sn", rest: "90 sn" },
-          { name: "Dragon Flag", sets: "3", reps: "5-8", rest: "120 sn" },
-          { name: "Hollow Body Hold", sets: "3", reps: "30-45 sn", rest: "90 sn" }
-        ]
-      },
-      {
-        day: "Gün 2 - Denge",
-        exercises: [
-          { name: "Handstand Hold", sets: "4", reps: "20-30 sn", rest: "120 sn" },
-          { name: "Crow Pose", sets: "3", reps: "15-20 sn", rest: "90 sn" },
-          { name: "Single Leg Deadlift", sets: "3", reps: "8-12", rest: "90 sn" }
-        ]
-      }
+    id: '3',
+    name: 'İleri Seviye Güç Programı',
+    description: 'Güç ve kas kütlesi geliştirmeye odaklanan ileri seviye program.',
+    level: 'advanced',
+    duration: '16 hafta',
+    frequency: 'Haftada 5 gün',
+    exercises: [
+      { exerciseId: '1', sets: 5, reps: 5, rest: '180 saniye' },
+      { exerciseId: '2', sets: 5, reps: 5, rest: '180 saniye' },
+      { exerciseId: '3', sets: 5, reps: 3, rest: '240 saniye' }
     ]
   }
 ];
 
 export default function WorkoutsPage() {
-  const [selectedProgram, setSelectedProgram] = useState<WorkoutProgram | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("all");
-
-  const difficulties = Array.from(new Set(workoutPrograms.map(program => program.difficulty)));
-  
-  const filteredPrograms = workoutPrograms.filter(program => 
-    selectedDifficulty === "all" || program.difficulty === selectedDifficulty
-  );
+  const [workoutPrograms] = useState<WorkoutProgram[]>(initialWorkoutPrograms);
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Antrenman Programları</h1>
-      
-      <div className="mb-6">
-        <select
-          value={selectedDifficulty}
-          onChange={(e) => setSelectedDifficulty(e.target.value)}
-          className="p-2 border rounded-lg"
-        >
-          <option value="all">Tüm Zorluk Seviyeleri</option>
-          {difficulties.map(difficulty => (
-            <option key={difficulty} value={difficulty}>{difficulty}</option>
-          ))}
-        </select>
-      </div>
+    <main className="container mx-auto px-4 py-8">
+      <nav className="bg-blue-600 text-white p-4 rounded-lg mb-6">
+        <h1 className="text-xl font-bold">Antrenman Programları</h1>
+      </nav>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredPrograms.map(program => (
-          <div
-            key={program.id}
-            className="border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
-          >
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">{program.name}</h2>
-              <div className="flex gap-2 mb-4">
-                <span className={`text-sm px-2 py-1 rounded ${
-                  program.difficulty === 'Başlangıç' ? 'bg-green-100 text-green-800' :
-                  program.difficulty === 'Orta' ? 'bg-yellow-100 text-yellow-800' :
-                  'bg-red-100 text-red-800'
-                }`}>
-                  {program.difficulty}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {workoutPrograms.map((program) => (
+          <div key={program.id} className="card hover:shadow-lg transition-shadow duration-200">
+            <div className="p-4">
+              <h2 className="text-lg font-semibold mb-2">{program.name}</h2>
+              <p className="text-gray-600 dark:text-gray-300 text-sm mb-4">{program.description}</p>
+              <div className="flex flex-wrap gap-2 mb-4">
+                <span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 rounded text-xs">
+                  {program.level}
                 </span>
-                <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
+                <span className="px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded text-xs">
                   {program.duration}
                 </span>
-                <span className="bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded">
+                <span className="px-2 py-1 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 rounded text-xs">
                   {program.frequency}
                 </span>
               </div>
-              <p className="text-gray-600 mb-4">{program.description}</p>
-              <button
-                onClick={() => setSelectedProgram(program)}
-                className="w-full bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition-colors"
-              >
+              <div className="mb-4">
+                <h3 className="text-sm font-medium mb-2">Egzersizler:</h3>
+                <ul className="space-y-2">
+                  {program.exercises.map((exercise, index) => (
+                    <li key={index} className="text-sm text-gray-600 dark:text-gray-300">
+                      • {exercise.sets} set x {exercise.reps} tekrar ({exercise.rest} dinlenme)
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <Link href={`/workouts/${program.id}`} className="button inline-block w-full text-center">
                 Program Detayları
-              </button>
+              </Link>
             </div>
           </div>
         ))}
       </div>
 
-      {selectedProgram && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg max-w-3xl w-full max-h-[90vh] overflow-y-auto">
-            <div className="p-6">
-              <div className="flex justify-between items-start mb-4">
-                <div>
-                  <h2 className="text-2xl font-bold mb-2">{selectedProgram.name}</h2>
-                  <div className="flex gap-2">
-                    <span className={`text-sm px-2 py-1 rounded ${
-                      selectedProgram.difficulty === 'Başlangıç' ? 'bg-green-100 text-green-800' :
-                      selectedProgram.difficulty === 'Orta' ? 'bg-yellow-100 text-yellow-800' :
-                      'bg-red-100 text-red-800'
-                    }`}>
-                      {selectedProgram.difficulty}
-                    </span>
-                    <span className="bg-blue-100 text-blue-800 text-sm px-2 py-1 rounded">
-                      {selectedProgram.duration}
-                    </span>
-                    <span className="bg-purple-100 text-purple-800 text-sm px-2 py-1 rounded">
-                      {selectedProgram.frequency}
-                    </span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => setSelectedProgram(null)}
-                  className="text-gray-500 hover:text-gray-700"
-                >
-                  ✕
-                </button>
-              </div>
-
-              <p className="text-gray-600 mb-6">{selectedProgram.description}</p>
-
-              <div className="space-y-6">
-                {selectedProgram.schedule.map((day, index) => (
-                  <div key={index} className="border rounded-lg p-4">
-                    <h3 className="text-lg font-semibold mb-4">{day.day}</h3>
-                    <table className="w-full">
-                      <thead>
-                        <tr className="text-left">
-                          <th className="pb-2">Egzersiz</th>
-                          <th className="pb-2">Set</th>
-                          <th className="pb-2">Tekrar</th>
-                          <th className="pb-2">Dinlenme</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {day.exercises.map((exercise, exerciseIndex) => (
-                          <tr key={exerciseIndex} className="border-t">
-                            <td className="py-2">{exercise.name}</td>
-                            <td className="py-2">{exercise.sets}</td>
-                            <td className="py-2">{exercise.reps}</td>
-                            <td className="py-2">{exercise.rest}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+      <nav className="bottom-nav">
+        <Link href="/" className="nav-link">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+          <span className="text-xs">Ana Sayfa</span>
+        </Link>
+        <Link href="/exercises" className="nav-link">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+          </svg>
+          <span className="text-xs">Egzersizler</span>
+        </Link>
+        <Link href="/workouts" className="nav-link">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+          </svg>
+          <span className="text-xs">Programlar</span>
+        </Link>
+      </nav>
+    </main>
   );
 } 

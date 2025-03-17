@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <title>Overhead Press</title>
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <!-- Barbell -->
+    <rect fill="#A0AEC0" x="150" y="150" width="500" height="20" rx="10"/>
+    <circle fill="#A0AEC0" cx="150" cy="160" r="40"/>
+    <circle fill="#A0AEC0" cx="650" cy="160" r="40"/>
+    
+    <!-- Weight Plates -->
+    <rect fill="#E53E3E" x="200" y="130" width="30" height="60" rx="5"/>
+    <rect fill="#E53E3E" x="570" y="130" width="30" height="60" rx="5"/>
+    <rect fill="#C53030" x="240" y="120" width="20" height="80" rx="5"/>
+    <rect fill="#C53030" x="540" y="120" width="20" height="80" rx="5"/>
+    
+    <!-- Stand -->
+    <rect fill="#4A5568" x="150" y="200" width="40" height="300"/>
+    <rect fill="#4A5568" x="610" y="200" width="40" height="300"/>
+    <rect fill="#2D3748" x="130" y="450" width="80" height="20"/>
+    <rect fill="#2D3748" x="590" y="450" width="80" height="20"/>
+  </g>
+</svg> 
