@@ -1,0 +1,43 @@
+{
+  "id": "gym-follow-pwa",
+  "name": "GymFollow",
+  "short_name": "GymFollow",
+  "description": "GymFollow ile egzersizlerinizi ve antrenman programlarınızı kolayca takip edin. Kişisel fitness yolculuğunuzda size rehberlik edecek kapsamlı bir antrenman takip uygulaması.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "orientation": "any",
+  "scope": "/",
+  "launch_handler": {
+    "client_mode": ["navigate-existing", "auto"]
+  },
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Egzersizler",
+      "url": "/exercises",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Programlar",
+      "url": "/workouts",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ],
+  "categories": ["fitness", "health", "lifestyle"],
+  "prefer_related_applications": false
+} 
